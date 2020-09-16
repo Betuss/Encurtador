@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<!-- TOPBAR START -->
+	<div id="layout-topbar">
+		<a href="#{facesContext.externalContext.requestContextPath}/restrito"
+			id="logo"> <h:outputText
+				value="Encurtador" style="color: white;" styleClass="Fs18 FontBold" /><br />
+			<h:outputText value="Encurte o seu URL" style="color: white;"
+				styleClass=" Fs12" />
+		</a>
+
+
+		<h:form enctype="multipart/form-data">
+			<ul id="top-menu">
+				<li class="ShowOnDesktop Unselectable MarTop7">
+					<p:clock pattern="dd/MM/yyyy | HH:mm:ss" />
+				</li>
+		
+				<li class="MarRight10">
+					<a class="ripplelink" title="Sair"
+						onclick="location.href='#{facesContext.externalContext.requestContextPath}/j_spring_security_logout'">
+						<i class="icon-power"></i><span class="ShowOnMobile">Sair</span>
+					</a>
+				</li>
+			</ul>
+		</h:form>
+	</div>
+	<!-- TOPBAR END -->
+
+</ui:composition>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+ 
+ 
+ <!-- Configuração do datasource (informações de gerenciamaneot de conexao do banco) -->
+    <b:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<b:property name="driverClassName" value="org.postgresql.Driver" />
+        
+        <b:property name="url" value="jdbc:postgresql://localhost:5432/encurtador" />
+		<b:property name="username" value="postgres" />
+		<b:property name="password" value="postgres" />
+        
+    </b:bean>
+ <!-- Fim da Configuração do datasource (informações de gerenciamaneto de conexao do banco) -->
+ 
+ 	<!-- Configuração do DAO OpenSessionView -->
+	 <b:bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<b:property name="dataSource">
+            <b:ref bean="dataSource" />
+        </b:property>
+        <b:property name="packagesToScan">
+			<b:list>
+				<b:value>br.gilberto.modelo</b:value>
+			</b:list>
+		</b:property>
+		<b:property name="hibernateProperties">
+			<b:props>
+				<b:prop key="hibernate.dialect">
+					org.hibernate.dialect.PostgreSQLDialect
+				</b:prop>
+				<!-- Atualizar o Banco de dados de acordo com os arquivos de mapeamentos. -->
+				<b:prop key="hibernate.hbm2ddl.auto">update</b:prop>
+				<b:prop key="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</b:prop>
+				<b:prop key="hibernate.cache.use_second_level_cache">true</b:prop>
+				<b:prop key="hibernate.show_sql">true</b:prop>
+				<b:prop key="hibernate.connection.release_mode">on_close</b:prop>
+				<b:prop key="hibernate.max_fetch_depth">5</b:prop>
+			</b:props>
+		</b:property>
+	</b:bean>
+ 	<!-- Configuração do DAO OpenSessionView -->
+ 
+ 	<!-- Activates annotation-based bean configuration -->
+	<context:annotation-config/>
+	 
+	<!--Transaction Manager	-->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	
+	<b:bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<b:property name="sessionFactory">
+			<b:ref bean="sessionFactory" />
+		</b:property>			
+	</b:bean>
+ 	
+ 	<!--Fim Transaction Manager	-->
+ 	
+ 	<!-- Carrega os Beans de Controle -->
+ 	<context:component-scan base-package="br.gilberto.controle" />
+ 	<context:component-scan base-package="br.gilberto.modelo" />
+ 	<context:component-scan base-package="br.gilberto.repositorio" />
+ 	<context:component-scan base-package="br.gilberto.arquitetura.seguranca" />
+ 	<context:component-scan base-package="br.gilberto.arquitetura.servico" />
+ 	<context:component-scan base-package="br.gilberto.arquitetura.dados" />
+ 	<context:component-scan base-package="br.gilberto.arquitetura.util" />
+ 	<!-- Fim Carrega os Beans de Controle -->
+ 	
+ 	
+ 	<!-- Configuração para os Escopos adicionais do Spring -->
+ 	<b:bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<b:property name="scopes">
+			<b:map>
+			<b:entry key="view">
+				<b:bean class="br.gilberto.arquitetura.util.ViewScope" />
+			</b:entry>
+			</b:map>
+		</b:property>
+	</b:bean>
+ 	
+ 	<!-- Fim Configuração para os Escopos adicionais do Spring -->
+ 
+<!-- Configuração refrente ao Spring Security -->
+ 
+ 	<b:bean id="customAuthenticationProvider"
+ 		class="br.gilberto.arquitetura.seguranca.CustomAuthenticationProvider" />
+
+    <http auto-config="true" use-expressions="true">
+        
+        <access-denied-handler error-page="/access-denied.xhtml" />
+        
+        <intercept-url pattern="/index.jsf" access="permitAll" />
+        
+        <intercept-url pattern="/restrito/**" access="isAuthenticated()" />
+        
+    	
+        <form-login login-page="/login.xhtml" authentication-failure-url="/login.jsf?erro=invalid" default-target-url="/restrito/"/>
+        <logout logout-success-url="/login.xhtml"  logout-url="/j_spring_security_logout" invalidate-session="true" />
+        <session-management>
+    		<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/pages/index.jsf?erro=expired" />
+  		</session-management>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider ref="customAuthenticationProvider" />
+    </authentication-manager>
+        
+ <!-- Fim da configuração do security -->
+ 
+</b:beans>

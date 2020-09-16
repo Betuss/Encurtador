@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template-login.xhtml">
+
+	<ui:define name="title">Acesso</ui:define>
+	
+	<ui:define name="content">
+		<div class="Container25 Responsive100 ui-fluid">
+			<div class="EmptyBox20" />
+		</div>
+		<div class="Container50 Responsive100 ui-fluid">
+			<div class="ContainerIndent">
+				<div class="Card ShadowEffect">
+					<h:form id="login" prependId="false" acceptcharset="UTF-8" onsubmit="action='#{facesContext.externalContext.requestContextPath}/j_spring_security_check';">
+						<p:focus for="j_username" />
+						
+						<div class="EmptyBox20"></div>
+						<div class="Wid100 OvHidden BigTopic Fs30 TexAlCenter">
+							<i class="icon-security Fs60 DispBlock"></i> Encurtador <span
+								class="Fs20 DispBlock FontRobotoLight">Inicie a sessão!</span>
+						</div>
+						<div class="EmptyBox20"></div>
+						<div class="Wid100 ui-fluid">
+							<p:inputText id="j_username" placeholder="Usuário de computador/rede"
+								styleClass="TexAlCenter" requerid="true" />
+						</div>
+						<div class="EmptyBox10"></div>
+						<div class="Wid100 ui-fluid">
+							<p:inputText id="j_password" type="password" placeholder="Senha"
+								styleClass="TexAlCenter" required="true"/>
+						</div>
+						<div class="EmptyBox10"></div>
+						
+						<h:panelGroup styleClass="ui-fluid">
+							<h:panelGroup
+								rendered="#{param.erro == 'invalid'
+										or param.erro == 'logout'}">
+								<div class="EmptyBox20"></div>
+							</h:panelGroup>
+							<p:button
+								value="Usuário ou senha incorretos."
+								icon="fa fa-info-circle" styleClass="RedButton" disabled="true"
+								rendered="#{param.erro == 'invalid'}" />
+							<p:button value="Logout efetuado com sucesso."
+								icon="fa fa-info-circle" styleClass="BlueButton" disabled="true"
+								rendered="#{param.erro == 'logout'}" />
+								
+							<div class="EmptyBox20"></div>
+						</h:panelGroup>
+									
+						<p:outputPanel style="width: 100%; text-align:center" layout="block">
+							<p:commandButton styleClass="White RaisedButton FloatNoneOnMobile notWhite" ajax="false" type="submit" value="Entrar" />
+						</p:outputPanel>
+						<div class="EmptyBox20"></div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

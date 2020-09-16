@@ -1,0 +1,21 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pm="http://primefaces.org/modena">
+
+    <div class="Animated05" id="layout-menu-cover">
+        <h:form id="menuform">
+            <pm:menu>
+	    		<p:menuitem value = "Gerenciamento de processos" url = "/pages/processo" rendered="#{mBUsuario.usuarioLogado.permissoes.contains('PROCESSO')}" icon="icon-looks_one" />
+				<p:menuitem value = "Gerenciamento de mídias" url = "/pages/arquivos/" rendered="#{mBUsuario.usuarioLogado.permissoes.contains('ARQUIVO')}" icon="icon-looks_two" />
+	     		<p:menuitem value = "Gerar certidão" url = "/pages/detalhes" icon="icon-looks_3" />
+                <p:separator />
+                <p:menuitem value = "Gerenciamento de usuários" url = "/pages/usuario" rendered="#{mBUsuario.usuarioLogado.permissoes.contains('GERENTE')}" icon="icon-people" />
+            </pm:menu>
+        </h:form>
+    </div>
+
+</ui:composition>

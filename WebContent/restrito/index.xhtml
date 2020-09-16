@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/template.xhtml">
+	
+	<ui:define name="title">
+		Encurtador de URL
+	</ui:define>
+	
+	<ui:define name="subheader">
+		<p:menuitem value="#{mBEncurtamento.usuario.username}" url="/restrito" />
+	</ui:define>
+
+	<ui:define name="content">
+		
+		<div class="Container50 Responsive100 ui-fluid">
+			<div class="ContainerIndent">
+				<div class="Card ShadowEffect">
+					<div class="CardTopic">
+						<i class="fa fa-file-pdf-o MarRight5"></i>
+						Encurtar URL
+					</div>
+					<p:separator styleClass="SeparatorFull" />
+					<div class="EmptyBox10"></div>
+					
+					<h:form id="formEncurtador" prependId="false">
+						<h:panelGroup id="painelEncurtador">
+							<div class="Container100">
+								<div class="ContainerIndent">
+									<p:outputLabel value="URL:" for="urlOriginal" />
+									<p:inputText value="#{mBEncurtamento.urlOriginal}" id="urlOriginal"
+										required="true" requiredMessage="Insira o URL a ser encurtado"/>
+								</div>
+							</div>
+							
+							<h:panelGroup id="painelUrlEncurtada" rendered="#{mBEncurtamento.codigoEncurtado != null}">
+								<div class="Container100">
+									<div class="ContainerIndent">
+										<p:panelGrid columns="1" styleClass="Wid100" layout="grid" style="background-color:#e0f5ee">
+											<f:facet name="header">
+												<h:panelGroup>
+													<i class="fa fa-check Green MarRight5"></i>
+													<h:outputText styleClass="Green" 
+														value="O URL foi encurtado com sucesso e ficará salvo na sua conta." />
+												</h:panelGroup>
+											</f:facet>
+											<h:panelGroup>
+												<p:commandButton id="botaoCopiar" value="#{mBEncurtamento.ultimoEncurtamento}" icon="fa fa-copy" />
+												<pe:clipboard id="clipCopy" trigger="botaoCopiar" action="copy" target="botaoCopiar" />
+											</h:panelGroup>
+										</p:panelGrid>
+									</div>
+								</div>
+							</h:panelGroup>
+							
+							<div class="ClearBoth"></div>
+						
+							<div class="CardFooter TexAlRight">
+								<p:commandButton value="Encurtar URL" 
+									title="Clique para encurtar o URL" actionListener="#{mBEncurtamento.encurtarUrl}"
+									update="growl painelEncurtador :dataGridEncurtamentos" icon="fa fa-share-square"
+									style="width:auto" styleClass="RaisedButton GreenButton MarRight10" />
+													
+								<p:commandButton value="Limpar"
+									actionListener="#{mBEncurtamento.limpar}" update="growl painelEncurtador"
+									icon="fa fa-eraser" styleClass="RedButton RaisedButton"
+									style="width:auto" resetValues="true" immediate="true" />
+							</div>
+						</h:panelGroup>
+					</h:form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="Container50 Responsive100 ui-fluid">
+			<div class="ContainerIndent">
+				<div class="Card ShadowEffect">
+					<div class="CardTopic">
+						<i class="fa fa-file-pdf-o MarRight5"></i>
+						Lista de URLs
+					</div>
+					<p:separator styleClass="SeparatorFull" />
+					<p:dataGrid id="dataGridEncurtamentos" value="#{mBEncurtamento.usuario.encurtamentos}" var="encurtamento"
+						columns="1" layout="grid" lazy="true" rows="3" emptyMessage="Nenhum encurtamento."
+						paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+				        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				        currentPageReportTemplate="({currentPage} de {totalPages})"
+						style="overflow: hidden !important; border: none;">
+				        <p:panel>
+				        	<f:facet name="header">
+				        		<div class="Fleft">
+				        			<div class="Fleft">
+				        				<a href="#{mBEncurtamento.getCaminhoEncurtado(encurtamento.codigo)}">
+					        				<h:outputText class="MarLeft5 MarRight5" value="#{mBEncurtamento.getCaminhoEncurtado(encurtamento.codigo)}" />
+				        				</a>
+				        			</div>
+								</div>
+				        		<div class="Fright FontNormal Fs12">
+									<i class="fa fa-clock-o MarRight5" title="Data de publicação"></i>
+									<h:outputText value="#{mBEncurtamento.dataFormatada(encurtamento.dataCadastro)}" />
+				        		</div>
+				        	</f:facet>
+				        	<h:panelGroup styleClass="ContainerIndent TexAlLeft">
+				        		<h:outputText value="#{encurtamento.urlOriginal}" />
+							</h:panelGroup>
+						</p:panel>
+					</p:dataGrid>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
